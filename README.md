@@ -82,11 +82,7 @@ Every step is something **moving on screen** — the pulse on a nearby pin, the 
 
 | Layer               | Technology                              | Why                                                                      |
 | ------------------- | --------------------------------------- | ------------------------------------------------------------------------ |
-| Mobile shell        | React Native 0.74 + Expo 51             | Single codebase, fast iteration with Expo Go for JS-only screens         |
-| Navigation          | Expo Router (file-based)                | Next.js-style mental model, typed routes                                 |
-| State               | Zustand + AsyncStorage persistence      | Tiny, no boilerplate; perfect for a hackathon sprint                     |
-| Animation           | Reanimated v3                           | 60fps XP pop-ups, pin pulses, level-up sequences                         |
-| Map (Tier 2)        | `@rnmapbox/maps`                        | Free tier, custom styles, clustering, real-time GPS                      |
+| Mobile shell        | Godot                | Free tier, custom styles, clustering, real-time GPS                      |
 | Map (Tier 1, today) | Hand-rolled styled `View` projection    | Zero native deps, runs in Expo Go for the demo                           |
 | Backend             | Supabase (Postgres + PostGIS + Realtime)| Auth + DB + realtime + storage in one — zero backend code                |
 | Geo queries         | PostGIS `ST_DWithin`                    | Indexed radius search for "what's near me" in milliseconds               |
