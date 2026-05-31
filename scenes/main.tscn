@@ -1,0 +1,942 @@
+[gd_scene load_steps=19 format=3 uid="uid://main_questcity"]
+
+[ext_resource type="Script" path="res://scripts/map/map_controller.gd" id="1_map"]
+[ext_resource type="Script" path="res://scripts/map/map_tile_loader.gd" id="2_tiles"]
+[ext_resource type="Script" path="res://scripts/map/quest_spawner.gd" id="3_spawner"]
+[ext_resource type="Script" path="res://scripts/ui/main_ui.gd" id="4_ui"]
+[ext_resource type="Script" path="res://scripts/ui/map_hud.gd" id="5_hud"]
+[ext_resource type="Script" path="res://scripts/ui/onboarding_screen.gd" id="6_onboard"]
+[ext_resource type="Script" path="res://scripts/ui/quest_feed_panel.gd" id="7_feed"]
+[ext_resource type="Script" path="res://scripts/ui/profile_panel.gd" id="8_profile"]
+[ext_resource type="Script" path="res://scripts/ui/quest_detail_sheet.gd" id="9_detail"]
+[ext_resource type="Script" path="res://scripts/ui/active_quest_hud.gd" id="10_active"]
+[ext_resource type="Script" path="res://scripts/ui/quest_complete_screen.gd" id="11_complete"]
+[ext_resource type="Script" path="res://scripts/ui/toast.gd" id="12_toast"]
+[ext_resource type="Script" path="res://scripts/ui/level_up_modal.gd" id="13_levelup"]
+[ext_resource type="Script" path="res://scripts/ui/leaderboard_tab.gd" id="14_lb"]
+[ext_resource type="Script" path="res://scripts/ui/ai_photo_panel.gd" id="15_ai"]
+[ext_resource type="Script" path="res://scripts/ui/feature_banner.gd" id="16_banner"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
+bg_color = Color(0.08, 0.09, 0.13, 0.98)
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sheet"]
+bg_color = Color(0.12, 0.13, 0.18, 0.98)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[node name="Main" type="Node"]
+
+[node name="MapController" type="Node2D" parent="."]
+visible = false
+script = ExtResource("1_map")
+
+[node name="MapTiles" type="Node2D" parent="MapController"]
+script = ExtResource("2_tiles")
+
+[node name="MarkersLayer" type="Node2D" parent="MapController"]
+
+[node name="PlayerMarker" type="Node2D" parent="MapController"]
+
+[node name="PlayerRing" type="Polygon2D" parent="MapController/PlayerMarker"]
+color = Color(0.35, 0.3, 0.75, 0.25)
+polygon = PackedVector2Array(-22, 0, 0, -22, 22, 0, 0, 22)
+
+[node name="PlayerDot" type="Polygon2D" parent="MapController/PlayerMarker"]
+color = Color(0.45, 0.35, 0.95, 1)
+polygon = PackedVector2Array(-10, 0, 0, -18, 10, 0, 0, 8)
+
+[node name="QuestSpawner" type="Node2D" parent="."]
+script = ExtResource("3_spawner")
+map_controller_path = NodePath("../MapController")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_ui")
+
+[node name="Onboarding" type="Control" parent="UI/MainUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_onboard")
+
+[node name="Bg" type="ColorRect" parent="UI/MainUI/Onboarding"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.09, 0.14, 1)
+
+[node name="Center" type="CenterContainer" parent="UI/MainUI/Onboarding"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/Onboarding/Center"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="UI/MainUI/Onboarding/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.92, 0.55, 1)
+theme_override_font_sizes/font_size = 28
+text = "QuestCity"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="UI/MainUI/Onboarding/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Walk the City. Complete the Quests. Become Legend."
+horizontal_alignment = 1
+
+[node name="SlideLabel" type="RichTextLabel" parent="UI/MainUI/Onboarding/Center/VBox"]
+custom_minimum_size = Vector2(320, 160)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Dots" type="HBoxContainer" parent="UI/MainUI/Onboarding/Center/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="D0" type="Label" parent="UI/MainUI/Onboarding/Center/VBox/Dots"]
+layout_mode = 2
+text = "●"
+
+[node name="D1" type="Label" parent="UI/MainUI/Onboarding/Center/VBox/Dots"]
+layout_mode = 2
+text = "●"
+
+[node name="D2" type="Label" parent="UI/MainUI/Onboarding/Center/VBox/Dots"]
+layout_mode = 2
+text = "●"
+
+[node name="NextBtn" type="Button" parent="UI/MainUI/Onboarding/Center/VBox"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Next"
+
+[node name="SignupPanel" type="VBoxContainer" parent="UI/MainUI/Onboarding/Center/VBox"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="UI/MainUI/Onboarding/Center/VBox/SignupPanel"]
+layout_mode = 2
+text = "Your explorer name"
+
+[node name="NameEdit" type="LineEdit" parent="UI/MainUI/Onboarding/Center/VBox/SignupPanel"]
+layout_mode = 2
+placeholder_text = "Enter username"
+
+[node name="CityLabel" type="Label" parent="UI/MainUI/Onboarding/Center/VBox/SignupPanel"]
+layout_mode = 2
+text = "Choose your city"
+
+[node name="CityOption" type="OptionButton" parent="UI/MainUI/Onboarding/Center/VBox/SignupPanel"]
+layout_mode = 2
+
+[node name="StartBtn" type="Button" parent="UI/MainUI/Onboarding/Center/VBox/SignupPanel"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Start Exploring"
+
+[node name="MapPanel" type="Control" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MapHUD" type="Control" parent="UI/MainUI/MapPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_hud")
+map_controller_path = NodePath("../../../../MapController")
+
+[node name="TopBar" type="HBoxContainer" parent="UI/MainUI/MapPanel/MapHUD"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 382.0
+offset_bottom = 36.0
+theme_override_constants/separation = 8
+
+[node name="XpLabel" type="Label" parent="UI/MainUI/MapPanel/MapHUD/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.1, 0.08, 0.15, 1)
+theme_override_font_sizes/font_size = 12
+text = "Lv.1 Street Rookie"
+
+[node name="StreakLabel" type="Label" parent="UI/MainUI/MapPanel/MapHUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "🔥 0d"
+
+[node name="CoordsLabel" type="Label" parent="UI/MainUI/MapPanel/MapHUD/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "0, 0"
+
+[node name="MapControls" type="VBoxContainer" parent="UI/MainUI/MapPanel/MapHUD"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -52.0
+offset_top = -200.0
+offset_right = -8.0
+offset_bottom = -80.0
+theme_override_constants/separation = 6
+
+[node name="BtnZoomIn" type="Button" parent="UI/MainUI/MapPanel/MapHUD/MapControls"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="BtnZoomOut" type="Button" parent="UI/MainUI/MapPanel/MapHUD/MapControls"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "−"
+
+[node name="BtnRecenter" type="Button" parent="UI/MainUI/MapPanel/MapHUD/MapControls"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "⌖"
+
+[node name="FeatureBanner" type="PanelContainer" parent="UI/MainUI/MapPanel/MapHUD"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 42.0
+offset_right = 382.0
+offset_bottom = 168.0
+script = ExtResource("16_banner")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DailyRow" type="HBoxContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DailyVBox" type="VBoxContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/DailyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DailyTitle" type="Label" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/DailyRow/DailyVBox"]
+layout_mode = 2
+text = "Daily Challenge"
+
+[node name="DailyDesc" type="Label" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/DailyRow/DailyVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 3
+text = "..."
+
+[node name="DailyBtn" type="Button" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/DailyRow"]
+layout_mode = 2
+text = "Go"
+
+[node name="MysteryRow" type="HBoxContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MysteryVBox" type="VBoxContainer" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/MysteryRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MysteryTitle" type="Label" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/MysteryRow/MysteryVBox"]
+layout_mode = 2
+text = "Mystery Quest"
+
+[node name="MysteryDesc" type="Label" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/MysteryRow/MysteryVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 3
+text = "..."
+
+[node name="MysteryBtn" type="Button" parent="UI/MainUI/MapPanel/MapHUD/FeatureBanner/Margin/VBox/MysteryRow"]
+layout_mode = 2
+text = "???"
+
+[node name="Attribution" type="Label" parent="UI/MainUI/MapPanel/MapHUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -68.0
+offset_right = 240.0
+offset_bottom = -54.0
+theme_override_colors/font_color = Color(0.35, 0.35, 0.4, 1)
+theme_override_font_sizes/font_size = 9
+text = "© OpenStreetMap contributors"
+
+[node name="NearbyPanel" type="Control" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_feed")
+
+[node name="PanelBg" type="ColorRect" parent="UI/MainUI/NearbyPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.07, 0.1, 1)
+
+[node name="Header" type="HBoxContainer" parent="UI/MainUI/NearbyPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 374.0
+offset_bottom = 48.0
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UI/MainUI/NearbyPanel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.92, 0.93, 0.97, 1)
+theme_override_font_sizes/font_size = 20
+text = "Nearby Quests"
+
+[node name="FilterOption" type="OptionButton" parent="UI/MainUI/NearbyPanel/Header"]
+layout_mode = 2
+
+[node name="CreateBtn" type="Button" parent="UI/MainUI/NearbyPanel/Header"]
+layout_mode = 2
+text = "Create"
+
+[node name="Scroll" type="ScrollContainer" parent="UI/MainUI/NearbyPanel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 52.0
+offset_right = 378.0
+offset_bottom = 720.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="FeatureBanner" type="PanelContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+script = ExtResource("16_banner")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DailyRow" type="HBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox"]
+layout_mode = 2
+
+[node name="DailyVBox" type="VBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/DailyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DailyTitle" type="Label" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/DailyRow/DailyVBox"]
+layout_mode = 2
+text = "Daily"
+
+[node name="DailyDesc" type="Label" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/DailyRow/DailyVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "..."
+
+[node name="DailyBtn" type="Button" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/DailyRow"]
+layout_mode = 2
+text = "Go"
+
+[node name="MysteryRow" type="HBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox"]
+layout_mode = 2
+
+[node name="MysteryVBox" type="VBoxContainer" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/MysteryRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MysteryTitle" type="Label" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/MysteryRow/MysteryVBox"]
+layout_mode = 2
+text = "Mystery"
+
+[node name="MysteryDesc" type="Label" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/MysteryRow/MysteryVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "..."
+
+[node name="MysteryBtn" type="Button" parent="UI/MainUI/NearbyPanel/Scroll/VBox/FeatureBanner/Margin/VBox/MysteryRow"]
+layout_mode = 2
+text = "???"
+
+[node name="QuestList" type="ItemList" parent="UI/MainUI/NearbyPanel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailLabel" type="RichTextLabel" parent="UI/MainUI/NearbyPanel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+text = "Select a quest to see details."
+
+[node name="LeaderboardPanel" type="Control" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("14_lb")
+
+[node name="PanelBg" type="ColorRect" parent="UI/MainUI/LeaderboardPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.07, 0.1, 1)
+
+[node name="Scroll" type="VBoxContainer" parent="UI/MainUI/LeaderboardPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 374.0
+offset_bottom = 720.0
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="UI/MainUI/LeaderboardPanel/Scroll"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.93, 0.97, 1)
+theme_override_font_sizes/font_size = 22
+text = "Leaderboard"
+
+[node name="Subtitle" type="Label" parent="UI/MainUI/LeaderboardPanel/Scroll"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.66, 1)
+text = "City rankings"
+
+[node name="List" type="ItemList" parent="UI/MainUI/LeaderboardPanel/Scroll"]
+custom_minimum_size = Vector2(0, 420)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="YourRankLabel" type="Label" parent="UI/MainUI/LeaderboardPanel/Scroll"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.35, 1)
+text = "Your rank: —"
+horizontal_alignment = 1
+
+[node name="ProfilePanel" type="Control" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_profile")
+
+[node name="PanelBg" type="ColorRect" parent="UI/MainUI/ProfilePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.07, 0.1, 1)
+
+[node name="Scroll" type="VBoxContainer" parent="UI/MainUI/ProfilePanel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 370.0
+offset_bottom = 720.0
+theme_override_constants/separation = 10
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/ProfilePanel/Scroll"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Player Profile"
+
+[node name="AvatarRow" type="HBoxContainer" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="Avatar" type="ColorRect" parent="UI/MainUI/ProfilePanel/Scroll/VBox/AvatarRow"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="UsernameLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Explorer"
+
+[node name="RankLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Level 1 — Street Rookie"
+
+[node name="XpBar" type="ProgressBar" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 500.0
+show_percentage = false
+
+[node name="XpLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "0 XP"
+
+[node name="StreakLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Streak: 0 days"
+
+[node name="CoinsLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Coins: 0"
+
+[node name="QuestsLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Quests completed: 0"
+
+[node name="AiLabel" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "AI photo verifications: 0"
+
+[node name="BadgesTitle" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Achievements"
+
+[node name="BadgesGrid" type="GridContainer" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="RewardsTitle" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Real Rewards"
+
+[node name="RewardsList" type="ItemList" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+
+[node name="ClaimBtn" type="Button" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Claim Reward"
+
+[node name="SettingsTitle" type="Label" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Settings"
+
+[node name="ChaosCheck" type="CheckBox" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+button_pressed = true
+text = "Chaos Mode (funny quests)"
+
+[node name="TilesCheck" type="CheckBox" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+button_pressed = true
+text = "Load OpenStreetMap tiles"
+
+[node name="NameEdit" type="LineEdit" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "Username"
+
+[node name="SaveBtn" type="Button" parent="UI/MainUI/ProfilePanel/Scroll/VBox"]
+layout_mode = 2
+text = "Save Profile"
+
+[node name="QuestDetailSheet" type="PanelContainer" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -320.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sheet")
+script = ExtResource("9_detail")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/QuestDetailSheet"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/QuestDetailSheet/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Quest Title"
+
+[node name="TypeLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+text = "Type"
+
+[node name="DescLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "Description"
+
+[node name="DistLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+text = "Distance"
+
+[node name="XpLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+text = "XP"
+
+[node name="HintLabel" type="Label" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.62, 0.68, 1)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 3
+text = "Hint"
+
+[node name="AnswerEdit" type="LineEdit" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+visible = false
+layout_mode = 2
+placeholder_text = "Your answer"
+
+[node name="AcceptBtn" type="Button" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+text = "Accept Quest"
+
+[node name="CompleteBtn" type="Button" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+visible = false
+layout_mode = 2
+text = "Complete Quest"
+
+[node name="DismissBtn" type="Button" parent="UI/MainUI/QuestDetailSheet/Margin/VBox"]
+layout_mode = 2
+text = "Close"
+
+[node name="ActiveQuestHUD" type="PanelContainer" parent="UI/MainUI"]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 44.0
+offset_right = 382.0
+offset_bottom = 160.0
+script = ExtResource("10_active")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/ActiveQuestHUD"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/ActiveQuestHUD/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleLabel" type="Label" parent="UI/MainUI/ActiveQuestHUD/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Active Quest"
+
+[node name="ObjectiveLabel" type="Label" parent="UI/MainUI/ActiveQuestHUD/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 3
+text = "Objective"
+
+[node name="DistLabel" type="Label" parent="UI/MainUI/ActiveQuestHUD/Margin/VBox"]
+layout_mode = 2
+text = "Distance"
+
+[node name="TimerLabel" type="Label" parent="UI/MainUI/ActiveQuestHUD/Margin/VBox"]
+layout_mode = 2
+text = "Time left"
+
+[node name="AbandonBtn" type="Button" parent="UI/MainUI/ActiveQuestHUD/Margin/VBox"]
+layout_mode = 2
+text = "Abandon"
+
+[node name="QuestCompleteScreen" type="ColorRect" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.1, 0.85)
+script = ExtResource("11_complete")
+
+[node name="Center" type="CenterContainer" parent="UI/MainUI/QuestCompleteScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/QuestCompleteScreen/Center"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="UI/MainUI/QuestCompleteScreen/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "Quest Complete!"
+horizontal_alignment = 1
+
+[node name="XpLabel" type="Label" parent="UI/MainUI/QuestCompleteScreen/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 36
+text = "+50 XP"
+horizontal_alignment = 1
+
+[node name="QuestLabel" type="Label" parent="UI/MainUI/QuestCompleteScreen/Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quest name"
+horizontal_alignment = 1
+
+[node name="ContinueBtn" type="Button" parent="UI/MainUI/QuestCompleteScreen/Center/VBox"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Continue"
+
+[node name="Toast" type="PanelContainer" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 80.0
+offset_right = 160.0
+offset_bottom = 120.0
+grow_horizontal = 2
+script = ExtResource("12_toast")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/Toast"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="UI/MainUI/Toast/Margin"]
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 2
+text = "Toast message"
+
+[node name="LevelUpModal" type="PanelContainer" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -80.0
+offset_right = 140.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("13_levelup")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/LevelUpModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/LevelUpModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LevelLabel" type="Label" parent="UI/MainUI/LevelUpModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 24
+text = "LEVEL UP!"
+horizontal_alignment = 1
+
+[node name="RankLabel" type="Label" parent="UI/MainUI/LevelUpModal/Margin/VBox"]
+layout_mode = 2
+text = "Level 5 — Urban Scout"
+horizontal_alignment = 1
+
+[node name="OkBtn" type="Button" parent="UI/MainUI/LevelUpModal/Margin/VBox"]
+layout_mode = 2
+text = "Awesome!"
+
+[node name="AiPhotoPanel" type="ColorRect" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("15_ai")
+
+[node name="Center" type="CenterContainer" parent="UI/MainUI/AiPhotoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="UI/MainUI/AiPhotoPanel/Center"]
+custom_minimum_size = Vector2(320, 360)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="UI/MainUI/AiPhotoPanel/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "AI Photo Verification"
+horizontal_alignment = 1
+
+[node name="QuestLabel" type="Label" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CriteriaLabel" type="Label" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 11
+
+[node name="StatusLabel" type="Label" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 4.0
+show_percentage = false
+
+[node name="MatchLabel" type="Label" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="VerifyBtn" type="Button" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Run AI Scan"
+
+[node name="CancelBtn" type="Button" parent="UI/MainUI/AiPhotoPanel/Center/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="BottomBar" type="PanelContainer" parent="UI/MainUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="HBox" type="HBoxContainer" parent="UI/MainUI/BottomBar"]
+layout_mode = 2
+alignment = 1
+
+[node name="BtnMap" type="Button" parent="UI/MainUI/BottomBar/HBox"]
+custom_minimum_size = Vector2(90, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text = "🗺 Map"
+
+[node name="BtnNearby" type="Button" parent="UI/MainUI/BottomBar/HBox"]
+custom_minimum_size = Vector2(90, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text = "📍 Nearby"
+
+[node name="BtnRank" type="Button" parent="UI/MainUI/BottomBar/HBox"]
+custom_minimum_size = Vector2(90, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text = "🏆 Rank"
+
+[node name="BtnProfile" type="Button" parent="UI/MainUI/BottomBar/HBox"]
+custom_minimum_size = Vector2(90, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text = "👤 Profile"

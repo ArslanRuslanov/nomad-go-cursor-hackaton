@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://quest_marker_qc"]
+
+[ext_resource type="Script" path="res://scripts/map/quest_marker.gd" id="1_marker"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pin"]
+radius = 20.0
+
+[node name="QuestMarker" type="Area2D"]
+script = ExtResource("1_marker")
+
+[node name="PulseRing" type="Polygon2D" parent="."]
+visible = false
+color = Color(0.25, 0.45, 0.95, 0.35)
+polygon = PackedVector2Array(-24, 8, 0, -28, 24, 8, 0, 40)
+
+[node name="PinBody" type="Polygon2D" parent="."]
+color = Color(0.25, 0.45, 0.95, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 20, 8, 32, 0, 20)
+
+[node name="PinLabel" type="Label" parent="."]
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "?"
+horizontal_alignment = 1
+
+[node name="LockIcon" type="Label" parent="."]
+visible = false
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 26.0
+offset_bottom = 22.0
+theme_override_font_sizes/font_size = 12
+text = "🔒"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 16)
+shape = SubResource("CircleShape2D_pin")
